@@ -170,13 +170,12 @@ def logout():
 def signin():
     if request.method == 'GET':
         return render_template(SIGNIN_PAGE, title=SIGNIN_TITLE)
-    elif request.method == 'POST':
-        username = request.form['username']
-        password = request.form['pswd']
-        role = "default"
-        hashed_password = bcrypt.generate_password_hash(password)
-        db_manager.add_user(username, hashed_password, role)
-        return redirect(url_for('login'))
+    username = request.form['username']
+    password = request.form['pswd']
+    role = "default"
+    hashed_password = bcrypt.generate_password_hash(password)
+    db_manager.add_user(username, hashed_password, role)
+    return redirect(url_for('login'))
 
 ##################################
 ####### END OF LOGIN LOGIC #######
