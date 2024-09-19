@@ -1,0 +1,28 @@
+{% extends "layout.html" %} {% block content %}
+
+  <div class="container my-5" style="width: 20%;">
+    <div class="card card-shadow bg-light">
+      <div class="card-header text-center bg-primary text-white">
+        <h3>{{ title }}</h3>
+      </div>
+
+      <form class="p-5" action="{{ url_for('signin') }}" id="bga_form" method="POST" name="fr">
+        <div class="form-group">
+          <label for="id">Username</label>
+          <input type="text" class="form-control" id="username" name="username" required>
+        </div>
+
+        <div class="form-group">
+          <label for="pswd">Password</label>
+          <input type="password" class="form-control" id="pswd" name="pswd" required>
+        </div>
+          
+        <div class="text-center">
+          <button class="mt-4 btn btn-lg btn-green mt-1" id="submit-btn" type="Submit" value="Submit">Sign In</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+{% endblock content %}

@@ -1,0 +1,185 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="container my-4">
+    <div class="container text-center mb-4">
+        <a href="/" class="btn btn-primary btn-lg">BACK</a>
+    </div>
+    <div class="card card-shadow bg-light mb-3">
+        <div class="card-header text-center text-white bg-info">
+            <h3>{{ title }}</h3>
+        </div>
+        <div class="table-responsive-md">
+            <table class="table table-striped table-hover border">
+            <thead class="table-primary bordered">
+                <tr>
+                <th style="display: none;">Record</th>
+                <th>ID</th>
+                <th>SN</th>
+                <th>PN</th>
+                <th>Manufacturer</th>
+                <th>Description</th>
+                <th>Location</th>
+                <th>Result</th>
+                <th>Comment</th>
+                <th>Employee</th>
+                <th>Timestamp</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr role="button" class="clickable-row" data-href="{{ url_for('archive', search_sn=query_all.sn) }}">
+                    <td style="display: none;">{{ query_all.id }}</td>
+                    <td>{{ query_all.data_id }}</td>
+                    <td>{{ query_all.sn }}</td>
+                    <td>{{ query_all.pn }}</td>
+                    <td>{{ query_all.manufacturer }}</td>
+                    <td style="width: 15%;">
+                        <span class="fullText copyable"
+                              data-bs-toggle="popover"
+                              data-bs-trigger="hover" 
+                              data-bs-content="{{ query_all.description }}">
+                              {{ query_all.description }}
+                        </span>
+                    </td>
+                    <td>{{ query_all.location }}</td>
+                    {% if query_all.result == 'PASS' %}
+                    <td style="color: green; font-weight: bolder;">{{ query_all.result }}</td>
+                    {% elif query_all.result == 'FAIL' %}
+                    <td style="color: red; font-weight: bolder;">{{ query_all.result }}</td>
+                    {% else %}
+                    <td>{{ query_all.result }}</td>
+                    {% endif %}
+                    <td style="width: 15%;">
+                        <span class="fullText copyable"
+                              data-bs-toggle="popover"
+                              data-bs-trigger="hover" 
+                              data-bs-content="{{ query_all.comment }}">
+                              {{ query_all.comment }}
+                        </span>
+                    </td>
+                    <td>{{ query_all.employee }}</td>
+                    <td>{{ query_all.timestamp }}</td>
+                </tr>
+            </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="card card-shadow bg-light">
+        <div class="card-header text-center bg-primary text-white">
+            <h3>EDIT RECORD</h3>
+        </div>
+
+            <form action="/edit/{{ query_all.data_id }}/save" method="POST" class="p-4" name="fr">
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group mt-2" style="width: 10em;">
+                            <label for="result" style="font-weight: bolder;">RESULT:</label>
+                            <select type="text" class="form-control text-center" id="result" name="resulta" required>
+                            </select>
+                        </div>
+
+                        <div class="form-group mt-4">
+                            <label for="comment" style="font-weight: bolder">Comment</label>
+                            <textarea class="form-control" style="width: 70%;" id="comment" rows="6" name="comment" placeholder="Write your comment here" required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="col-6 mt-3">
+                                <div class="form-group mt-2">
+                                    <label for="current-location">Current Location</label>
+                                    <select class="form-control previous" name="current-location" id="current-location">
+                                        <option value="{{ current_location }}">{{ current_location }}</option>
+                                    </select>
+                                </div>
+                
+                                <div class="form-group mt-2">
+                                    <label for="current-position">Current Position</label>
+                                    <input type="text" class="form-control previous" id="current-position" name="current-position" value="{{ current_position }}" readonly>
+                                </div>
+                
+                                <div class="form-group mt-2">
+                                    <label for="current-shelf">Current Shelf</label>
+                                    <input type="text" class="form-control previous" id="current-shelf" name="current-shelf" value="{{ current_shelf }}" readonly>
+                                </div>
+                            </div>
+
+                            <div class="col-6 mt-3">
+                                <div class="form-group mt-2">
+                                    <label for="next-location" style="font-weight: bold;">Next Location</label>
+                                    <select type="text" class="form-control" id="next-location" name="next-location" placeholder="Select next location" required >
+                                    </select>
+                                </div>
+                
+                                <div class="form-group mt-2">
+                                    <label for="next-position" style="font-weight: bold;">Next Position</label>
+                                    <select type="text" class="form-control" id="next-position" name="next-position" placeholder="Enter next position" required>
+                                    </select>
+                                </div>
+                
+                                <div class="form-group mt-2">
+                                    <label for="next-shelf" style="font-weight: bold;">Next Shelf</label>
+                                    <select type="text" class="form-control" id="next-shelf" name="next-shelf" placeholder="Select next shelf" required>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+        
+                        <div class="form-group d-none">
+                            <label for="employee">Employee</label>
+                            <input type="text" class="form-control" id="employee" name="employee" value="{{ current_user.username }}" readonly>
+                        </div>
+        
+                        <div class=" text-center mt-5 mb-2">
+                            {% if is_active != current_user.username and current_user.role != 'admin' %}
+                                <span class="btn btn-warning btn-xl-green mx-3">Cannot Change</span>
+                            {% else %}
+                                <button type="Submit" class="btn btn-green btn-xl-green mx-3" id="submit-btn" value="Submit">SAVE</button>
+                            {% endif %}
+        
+                            {% if current_user.role == 'admin' %}
+                                <button type="button" class="btn btn-warning btn-xl-warning mx-3" data-bs-toggle="modal" data-bs-target="#userModal">Change User</button>
+                            {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+    </div>
+    
+    <!-- Modal -->
+    <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="userModalLabel">Assign New User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    
+                <form method="POST" action="/add_user/{{ query_all.data_id }}" id="userForm">
+                    <select class="form-control" name="userSelect" id="userSelect">
+                        <option value="admin">Admin</option>
+                        <option value="Joe">Joe</option>
+                        <option value="Jane">Jane</option>
+                        <option value="Spongebob">Spongebob</option>
+                        <option value="unassigned">None</option>
+                    </select>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" id="okButton" class="btn btn-primary">Change user</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='editrecord.js') }}"></script>
+
+{% endblock content %}

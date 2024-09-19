@@ -1,0 +1,89 @@
+{% extends "layout.html" %} {% block content %}
+<div class="container my-5">
+
+  <form id="idform" method="POST" action="/fifo" class="d-flex justify-content-center align-items-center">
+
+    <div class="form-group d-flex flex-row align-items-center">
+      <div class="col-auto mx-1">
+        <input class="d-none form-control text-center" type="text" id="submit-id-onclick" name="submit-id-onclick" placeholder="id" />
+      </div>
+      <div class="col-auto mx-1">
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="container" style="max-width: 90%;">
+  <div class="input-group mb-3">
+    <div class="input-group-prepend">
+      <span class="input-group-text bg-primary text-white" id="inputGroup-sizing-default">Filter by Location</span>
+    </div>
+    <select class="custom-select mx-3" id="filter-dropdown" style="border: 1px solid #65ce57;">
+    </select>
+  </div>
+  <div class="card card-shadow bg-light" style="margin: 0;">
+      <div class="card-header text-center text-white" style="background-color: #65ce57;">
+          <h3>{{ title }}</h3>
+      </div>
+      <div class="table-responsive-md">
+        <table id="table-categories" class="table table-striped table-hover border" style="width: 100%;">
+          <thead class="table-primary bordered">
+            <tr>
+              <th>ID</th>
+              <th>SN</th>
+              <th>PN</th>
+              <th>Manufacturer</th>
+              <th>Description</th>
+              <th>Prev. process</th>
+              <th>Result</th>
+              <th>Position</th>
+              <th>Shelf</th>
+              <th>Curr. Location</th>
+              <th>Date</th>
+              <th>Active User</th>
+              <th> </th>
+            </tr>
+          </thead>
+          <tbody>
+              {% for data, history in querry_all %}
+                <tr role="button">
+                  <td>{{ data.id }}</td>
+                  <td>{{ data.sn }}</td>
+                  <td>{{ data.pn }}</td>
+                  <td style="max-width: 100px !important;">{{ data.manufacturer }}</td>
+                  <td style="width: 15%;">
+                    <span class="fullText copyable"
+                          data-bs-toggle="popover"
+                          data-bs-trigger="hover" 
+                          data-bs-content="{{ data.description }}">
+                          {{ data.description }}
+                    </span>
+                </td>
+                  <td>{{ history.location }}</td>
+                  {% if history.result == 'PASS' %}
+                  <td style="color: green; font-weight: bolder;">{{ history.result }}</td>
+                  {% elif history.result == 'FAIL' %}
+                  <td style="color: red; font-weight: bolder;">{{ history.result }}</td>
+                  {% else %}
+                  <td>{{ history.result }}</td>
+                  {% endif %}
+                  <td>{{ history.position }}</td>
+                  <td>{{ history.shelf }}</td>
+                  <td style="color: blue;">{{ history.next_location }}</td>
+                  <td>{{ data.date_created }}</td>
+                  {% if data.active_user == 'unassigned' %}
+                    <td><a class="btn btn-green" style="width: 90px;" href="{{ url_for('add_user', recid=data.id) }}">ASSIGN</a></td>
+                  {% elif data.active_user == current_user.username %}
+                    <td style="font-weight: bold;">{{ data.active_user }}<a class="btn btn-secondary mx-2" href="{{ url_for('remove_user', recid=data.id) }}">remove</a></td>
+                  {% else %}
+                    <td style="font-weight: bold;">{{ data.active_user }}</td>
+                  {% endif %}
+                </tr>
+              {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script src="{{ url_for('static', filename='fifo.js') }}"></script>
+{% endblock content %}

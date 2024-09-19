@@ -1,0 +1,69 @@
+{% extends "layout.html" %} {% block content %}
+
+<div class="container my-5" style="width: 40%;">
+  <div class="row row-cols-2 g-4">
+    <div class="col d-flex">
+      <div class="card card-shadow bg-light flex-fill">
+        <div class="card-header text-center bg-primary text-white">
+          <h3>Password Reset</h3>
+        </div>
+        <form class="p-5 d-flex flex-column" action="{{ url_for('userset') }}" method="POST">
+          <div class="form-group">
+            <label for="pswd">New password:</label>
+            <input type="password" class="form-control" id="pswd" name="pswd" required>
+          </div>
+  
+          <div class="form-group">
+            <label for="pswd_check">Confirm password:</label>
+            <input type="password" class="form-control" id="pswd_check" name="pswd_check" required>
+          </div>
+              
+          <div class="form-group mt-2">
+            <input class="form-check-input" type="checkbox" id="revealBtn">
+            <label class="form-check-label mx-1" for="revealBtn" id="showHideLabel">Show password</label>
+          </div>
+  
+          <div class="text-center mt-auto">
+            <button class="mt-4 btn btn-lg btn-green mt-1" type="Submit" value="Submit">Change password</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="col d-flex">
+      {% if current_user.role == "admin" %}
+      <div class="card card-shadow bg-light flex-fill">
+        <div class="card-header text-center bg-primary text-white">
+          <h3>Assign User Role</h3>
+        </div>
+  
+        <form class="p-5 d-flex flex-column" action="{{ url_for('change_role') }}" method="POST">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <select class="form-control" id="username" name="username" required>
+              {% for user in users %}
+              <option value="{{ user }}">{{ user }}</option>
+              {% endfor %}
+            </select>
+          </div>
+  
+          <div class="form-group">
+            <label for="role">Role</label>
+            <select class="form-control" id="role" name="role" required>
+              <option value="default">User</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+  
+          <div class="text-center mt-auto">
+            <button class="mt-4 btn btn-lg btn-green mt-1" type="Submit" value="Submit">Assign Role</button>
+          </div>
+        </form>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+  <script src="{{ url_for('static', filename='login.js') }}"></script>
+
+{% endblock content %}

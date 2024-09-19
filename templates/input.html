@@ -1,0 +1,63 @@
+{% extends "layout.html" %} {% block content %}
+
+  <div class="container my-5" style="max-width: 30%;">
+    <div class="card card-shadow bg-light">
+      <div class="card-header text-center bg-primary text-white">
+        <h3>{{ title }}</h3>
+      </div>
+
+      <form class="p-4" action="/input" id="bga_form" method="POST" name="fr">
+        <div class="form-group">
+          <label for="id">ID</label>
+          <input type="text" class="form-control" id="id" name="id" required>
+        </div>
+
+        <div class="form-group mt-3">
+          <label for="sn">SN</label>
+          <input type="text" class="form-control" id="sn" name="sn" required>
+        </div>
+
+        <div class="form-group mt-3">
+          <label for="pn">PN</label>
+          <input type="text" class="form-control" id="pn" name="pn" required>
+        </div>
+
+        <div class="form-group mt-3">
+          <label for="type">Manufacturer</label>
+          <select class="form-control" name="manufacturer" id="manufacturer">
+            <option value="DELL">DELL</option>
+            <option value="HP">HP</option>
+            <option value="LENOVO">LENOVO</option>
+          </select>
+        </div>
+
+        <div class="form-group mt-3">
+          <label for="Desciption">Description</label>
+          <input type="text" class="form-control" id="des" name="des" required>
+        </div>
+
+        <div class="form-group mt-3">
+          <label for="location">Location</label>
+          <select class="form-control" name="location" id="location">
+            <option value="Rec 1">Rec 1</option>
+            <option value="Rec 2">Rec 2</option>
+          </select>
+        </div>
+
+        <div class="form-group mt-3">
+          <label for="shelf">Rack shelf</label>
+          <select class="form-control" name="shelf" id="shelf">
+          </select>
+        </div>
+          
+        <div class="text-center mt-3">
+          <button class="btn btn-lg btn-green mt-1" id="submit-btn" type="Submit" value="Submit">Submit</button>
+        </div>
+      
+      </form>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='input.js') }}"></script>
+
+{% endblock content %}
